@@ -1,0 +1,6 @@
+{% extends 'admin/model/modals/details.html' %}
+
+{% block details_table %}
+<a onclick="confirmOrder({{request.args.get('id')}})" class="btn btn-primary" data-dismiss="modal">♥</a>
+{{ super() }}
+{% endblock %}

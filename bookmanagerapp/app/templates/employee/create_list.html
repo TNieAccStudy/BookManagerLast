@@ -1,0 +1,153 @@
+{% extends 'admin/model/list.html' %}
+
+{% block body %}
+{{ super() }}
+
+<div class="modal fade in" id="fa_modal_window" tabindex="-1" role="dialog" aria-labelledby="fa_modal_label"
+    style="display: none; padding-right: 17px;" >
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h3>Create New Record</h3>
+            </div>
+            <div class="modal-body">
+                <form action="/em/em_receipts/new/?url=/em/em_receipts/" method="POST" role="form"
+                    class="admin-form form-horizontal" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="receipt_details" class="col-md-2 control-label">Receipt Details
+                            &nbsp;
+                        </label>
+                        <div class="col-md-10">
+
+                            <div class="select2-container select2-container-multi form-control"
+                                id="s2id_receipt_details" style="width: 100%;">
+                                <ul class="select2-choices">
+                                    <li class="select2-search-field"> <label for="s2id_autogen1"
+                                            class="select2-offscreen">Receipt Details
+                                            &nbsp;
+                                        </label> <input type="text" autocomplete="off" autocorrect="off"
+                                            autocapitalize="off" spellcheck="false" class="select2-input"
+                                            id="s2id_autogen1" placeholder="" style="width: 34px;"> </li>
+                                </ul>
+                                <div class="select2-drop select2-drop-multi select2-display-none">
+                                    <ul class="select2-results">
+                                        <li class="select2-no-results">No matches found</li>
+                                    </ul>
+                                </div>
+                            </div><select class="form-control" data-role="select2" id="receipt_details" multiple=""
+                                name="receipt_details" tabindex="-1" style="display: none;"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="is_pay" class="col-md-2 control-label">Is Pay
+                            &nbsp;
+                        </label>
+                        <div class="col-md-10">
+                            <input class="form-control" id="is_pay" name="is_pay" type="checkbox" value="y">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="active" class="col-md-2 control-label">Active
+                            &nbsp;
+                        </label>
+                        <div class="col-md-10">
+                            <input checked="" class="form-control" id="active" name="active" type="checkbox" value="y">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="created_at" class="col-md-2 control-label">Created At
+                            &nbsp;
+                        </label>
+                        <div class="col-md-10">
+
+                            <input class="form-control" data-date-format="YYYY-MM-DD HH:mm:ss"
+                                data-role="datetimepicker" id="created_at" name="created_at" type="text"
+                                value="2024-12-26 15:31:15">
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="updated_at" class="col-md-2 control-label">Updated At
+                            &nbsp;
+                        </label>
+                        <div class="col-md-10">
+
+                            <input class="form-control" data-date-format="YYYY-MM-DD HH:mm:ss"
+                                data-role="datetimepicker" id="updated_at" name="updated_at" type="text"
+                                value="2024-12-26 15:31:15">
+
+
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="client" class="col-md-2 control-label">Client
+
+                            <strong style="color: red">*</strong>
+                        </label>
+                        <div class="col-md-10">
+
+                            <div class="select2-container form-control" id="s2id_client" style="width: 100%;"><a
+                                    href="javascript:void(0)" class="select2-choice" tabindex="-1"> <span
+                                        class="select2-chosen" id="select2-chosen-2">user</span><abbr
+                                        class="select2-search-choice-close"></abbr> <span class="select2-arrow"
+                                        role="presentation"><b role="presentation"></b></span></a><label
+                                    for="s2id_autogen2" class="select2-offscreen">Client
+
+                                    *
+                                </label><input class="select2-focusser select2-offscreen" type="text"
+                                    aria-haspopup="true" role="button" aria-labelledby="select2-chosen-2"
+                                    id="s2id_autogen2">
+                                <div class="select2-drop select2-display-none select2-with-searchbox">
+                                    <div class="select2-search"> <label for="s2id_autogen2_search"
+                                            class="select2-offscreen">Client
+
+                                            *
+                                        </label> <input type="text" autocomplete="off" autocorrect="off"
+                                            autocapitalize="off" spellcheck="false" class="select2-input"
+                                            role="combobox" aria-expanded="true" aria-autocomplete="list"
+                                            aria-owns="select2-results-2" id="s2id_autogen2_search" placeholder="">
+                                    </div>
+                                    <ul class="select2-results" role="listbox" id="select2-results-2"> </ul>
+                                </div>
+                            </div><select class="form-control" data-role="select2" id="client" name="client" required=""
+                                tabindex="-1" title="Client
+        
+          *
+    " style="display: none;">
+                                <option value="1">user</option>
+                                <option value="2">admin</option>
+                            </select>
+
+
+                        </div>
+
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10 submit-row">
+                            <input type="submit" class="btn btn-primary" value="Save">
+
+
+                            <a href="/em/em_receipts/" class="btn btn-danger" role="button"
+                                data-dismiss="modal">Cancel</a>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <script src="/em/static/admin/js/bs3_modal.js?v=1.0.0"></script>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block tail %}
+{{super()}}
+<!-- list.html have create-modal don't have bootstrap js -->
+{% endblock %}

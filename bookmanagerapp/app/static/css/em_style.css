@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.page_body {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.my_container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px;
+    gap: 10px;
+    font-weight: 17px;
+    /* color: #fff; */
+}
+
+.my_container>div {
+    flex: 100%;
+}
+
+.my_sub_container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.my_navbar {
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    min-height: 50px;
+    background: #46ca88;
+    border-radius: 3px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.my_navbar>div {
+    flex:100%;
+    height: 100%;
+}
+
+.item_bar1 {
+    flex:1;
+    background: #1096d0;
+    transform: translateY(10px);
+}
+
+.item_bar2 {
+    flex:1;
+    display: flex;
+    flex-direction: row;
+    background: #23d010;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* .sidebar_area {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+} */
+
+.sidebar {
+    flex: 0.15;
+    background: greenyellow;
+    transform: translateX(0%); 
+    transition: all 0.3s ease-in-out; /* Hiệu ứng chuyển động */
+    /* flex:0.7; */
+    background: greenyellow;
+    overflow: hidden;
+}
+
+/* .sidebar_area:hover .sidebar {
+    flex: 1; 
+    transform: translateX(0); 
+} */
+
+.sidebar>div {
+    /* flex:80%; */
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar>div>li{
+    padding: 2px;
+    margin:5px;
+}
+
+.my_main_container {
+    flex:1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.my_main_container>div {
+    flex:100%;
+}
+
+h2 {
+    padding: 10px;
+}
+
+.main {
+    min-height: 500px;
+    background: rgb(255, 255, 255);
+}
+
+.my_footer {
+    flex: 100%;
+    min-height: 50px;
+    background: pink;
+}
+
+.main,.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border-radius: 3px;
+    
+}
+
+.my_footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 3px;
+    flex-direction: column;
+}
+@media only screen and (max-width: 768px) {
+    .my_sub_container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        min-height: 50px;
+    }
+}
+
+.my_brand {
+    /* background: #d210f5; */
+    padding: 5px;
+    font-size: 28px;
+    border-radius: 5px;
+}

@@ -1,0 +1,36 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="grid">
+<h1 class="text-center text-danger mt-3">YÊU CẦU HỦY ĐƠN HÀNG</h1>
+{% if order %}
+<table class="table table-bordered table-striped table-hover mt-4 mb-4">
+    <thead class="table-dark fs-2" >
+        <tr>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành Tiền</th>
+        </tr>
+    </thead>
+    <tbody class="fs-3">
+        {% for c in order %}
+        <tr id="book{{ c[0] }}">
+            <td>{{ c[0] }}</td>
+            <td>{{ c[1] }}</td>
+            <td>{{ "{:,.0f}".format(c[3]).replace(",", ".") }}  VNĐ</td>
+            <td>{{ c[2] }}</td>
+            <td>{{"{:,.0f}".format(c[3] * c[2]).replace(",", ".") }} VNĐ</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<textarea class="form-control fs-3" rows="5" id="reason" name="text" placeholder="Lý do hủy..."></textarea>
+    <!--<button type="submit" class="btn btn-primary btn-danger mt-2" onclick="deleteOrder({{ order_id }}, this)">Hủy Đơn Hàng</button>-->
+    <button class="btn btn-primary btn-danger mt-4 mb-4 fs-3" onclick="requestCancelOrder({{ order_id }}, this)">Yêu Cầu Hủy Đơn Hàng</button>
+{% else %}
+    <p>No order details found.</p>
+{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,156 @@
+Nguyễn Hải Minh
+{% extends 'admin/master.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload and Display</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nhập Sách</h1>
+    <input type="file" id="fileInput" />
+    <table id="dataTable">
+        <thead>
+            <tr id="tableHeader"></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+    <button id="submitButton">Submit Data</button>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const contents = e.target.result;
+                    displayData(contents);
+                };
+                reader.readAsText(file);
+            }
+        });
+        async function regulationBookAmount() {
+            try {
+                const response = await fetch('/api/regulations/book-amount', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const result = await response.json();
+                console.log(result.value);
+                return result.value;
+            } catch (error) {
+                console.error('Error:', error);
+                return null;
+            }
+        }
+        
+        function displayData(contents) {
+            const lines = contents.split('\n');
+            const tableHeader = document.getElementById('tableHeader');
+            const tableBody = document.getElementById('tableBody');
+        
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+        
+            const headers = lines[0].split(',').map(header => header.trim());
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                tableHeader.appendChild(th);
+            });
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                const tr = document.createElement('tr');
+                for (let j = 0; j < row.length - 2; j++) {
+                    const td = document.createElement('td');
+                    if (j === 2) {
+                        td.textContent =row[j];
+                        console.log(td.textContent.split('-'));
+                    } else {
+                    td.textContent = row[j];
+                    }
+                    console.log(td.textContent);
+                    tr.appendChild(td);
+                }
+                const lastTd = document.createElement('td');
+                lastTd.textContent = row[row.length - 2] + ',' + row[row.length - 1];
+                tr.appendChild(lastTd);
+                tableBody.appendChild(tr);
+            }
+        }
+        
+        document.getElementById('submitButton').addEventListener('click', async function() {
+            const table = document.getElementById('dataTable');
+            const rows = table.getElementsByTagName('tr');
+            const data = [];
+            const bookAmount = await regulationBookAmount();
+            let amout=0;
+            let maxQuantity=0;
+            for (let i = 1; i < rows.length; i++){
+                const cells = rows[i].getElementsByTagName('td');
+                if (parseInt(cells[4].textContent)>maxQuantity) {
+                    maxQuantity=parseInt(cells[4].textContent);
+                }
+                amout+=parseInt(cells[4].textContent);
+            }
+            if (amout<= bookAmount ) {
+                alert(`Nhập Ít Nhất ${bookAmount} quyển sách!`);
+                return;
+            }
+            if (maxQuantity>=300) {
+                alert('Số lượng của từng quyển sách phải ít hơn 300!');
+                return;
+            }
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                console.log(cells[2].textContent.split('-'));
+                const rowData = {
+                    title: cells[1].textContent,
+                    category_books:  cells[2].textContent.split('-'),
+                    author: cells[3].textContent,
+                    quantity: parseInt(cells[4].textContent),
+                    price: parseFloat(cells[5].textContent),
+                    price_reduced: parseFloat(cells[6].textContent),
+                    image: cells[7].textContent.trim()
+                };
+                data.push(rowData);
+            }
+
+            fetch('/api/book/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ books: data })
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Success:', result);
+                alert('Data submitted successfully!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the data.');
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

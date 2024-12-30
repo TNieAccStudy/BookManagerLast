@@ -1,0 +1,105 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+
+<div id="order-history" class="grid">
+    <h1 class="text-center text-danger mt-1">LỊCH SỬ ĐẶT HÀNG</h1>
+    <div id="loader" style="text-align: center;">
+        <div class="spinner-border text-danger" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+    </div>
+
+    <div id="orders-content" style="display: none;">
+        {% if orders %}
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark fs-4 bg-primary" style="background-color: blue; color: white;">
+                <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Ngày đặt hàng</th>
+                    <th>Người nhận</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
+                    <th>Phương thức thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody class="fs-4">
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.created_at }}</td>
+                    <td>{{ order.name }}</td>
+                    <td>{{ order.delivery_address }}</td>
+                    <td>{{ order.phone }}</td>
+                    <td>{{ order.method_bank }}</td>
+                    <td>{{ order.is_confirm }}</td>
+                    <td >
+                        <a href="/orders/{{ order.id }}" class="btn btn-primary btn-sm fs-4">Chi tiết</a>
+                        <a href="/orders/{{ order.id }}/review" class="btn btn-primary btn-sm fs-4" id="review-order-{{ order.id }}" style="display:none">Đánh Giá</a>
+                        <a href="/orders/{{ order.id }}/pay" class="btn btn-success btn-sm fs-4" target="_blank" id="pay-{{ order.id }}">Thanh Toán</a>
+                        <a href="/orders/{{ order.id }}/cancel" class="btn btn-danger btn-sm fs-4 cancel-order" data-order-id="{{ order.id }}">Yêu Cầu Hủy</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-info">Không có đơn hàng nào!</div>
+        {% endif %}
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const loader = document.getElementById('loader');
+        const ordersContent = document.getElementById('orders-content');
+        setTimeout(() => {
+            loader.style.display = 'none';
+            ordersContent.style.display = 'block';
+        }, 1000);
+
+        const cancelButtons = document.querySelectorAll('.cancel-order');
+        cancelButtons.forEach(button => {
+            const orderId = button.getAttribute('data-order-id');
+            
+            fetch(`/orders/${orderId}/status`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.status === 'requestcancelled') {
+                        button.style.display = 'none';
+                    }
+                    if (data.status === 'confirmed') {
+                        const reviewButton = document.getElementById(`review-order-${orderId}`);
+                        reviewButton.style.display = 'inline-block';
+                        button.style.display = 'none';
+                        const payButton = document.getElementById(`pay-${orderId}`);
+                        payButton.style.display = 'none';
+                    }
+                    if (data.status === 'cancelled') {
+                        button.style.display = 'none';
+                        const reviewButton = document.getElementById(`review-order-${orderId}`);
+                        reviewButton.style.display = 'none';
+                        const payButton = document.getElementById(`pay-${orderId}`);
+                        payButton.style.display = 'none';
+                    }
+                    if (data.status === 'pending') {
+                        button.style.display = 'inline-block';
+                        const reviewButton = document.getElementById(`review-order-${orderId}`);
+                        reviewButton.style.display = 'none';
+                        const payButton = document.getElementById(`pay-${orderId}`);
+                        payButton.style.display = 'none';
+                    }
+                    if (data.status === 'requestcancelled__pending') {
+                        button.style.display = 'none';
+                        const reviewButton = document.getElementById(`review-order-${orderId}`);
+                        reviewButton.style.display = 'none';
+                        const payButton = document.getElementById(`pay-${orderId}`);
+                        payButton.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+{% endblock %}

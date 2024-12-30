@@ -1,0 +1,128 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<h1 class="text-center text-info">THÔNG KÊ VÀ BÁO CÁO</h1>
+<div class="row">
+  <div class="col-md-12">
+    <form method="get" action="">
+      <div class="form-group" style='width:200px'>
+        <label for="month">Chọn tháng:</label>
+        <select id="month" name="month" class="form-control">
+          <option value="">Tất cả</option>
+          {% for i in months %}
+          <option value="{{ i }}" {% if selected_month and selected_month|int == i %}selected{% endif %}>Tháng {{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Xem thống kê</button>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-5 col-xs-12">
+    <table class="table">
+      <tr>
+        <th>Id</th>
+        <th>Tháng </th>
+        <th>Tên sản phẩm</th>
+        <th>Doanh thu</th>
+        <th>Số Lượt Bán</th>
+        <th>Tỷ lệ</th>
+      </tr>
+      {% for s in stats %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ s[0] }}</td>
+        <td>{{ s[1] }}</td>
+        <td>{{ s[2] }} VNĐ</td>
+        <td>{{ s[3] }} </td>
+        <td>{{ "{:.2f}".format(s[4]) }}%</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="col-md-7 col-xs-12">
+    <canvas id="myChart"></canvas>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-5 col-12">
+    <table class="table">
+      <tr>
+        <th>Id</th>
+        <th>Tháng</th>
+        <th>Tên sản phẩm</th>
+        <th>Thể Loại</th>
+        <th>Số Lượng</th>
+        <th>Số Lượt Bán</th>
+        <th>Tỷ Lệ</th>
+      </tr>
+      {% for s in stats_book_sold %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ s[0] }}</td>
+        <td>{{ s[1] }}</td>
+        <td>{{ s[2] }}</td>
+        <td>{{ s[3] }} </td>
+        <td>{{ s[4] }} </td>
+        <td>{{ "{:.2f}".format(s[5]) }}%</td>
+
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="col-md-7 col-12">
+    <canvas id="myChart2"></canvas>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  function draw(ctx, data, labels,nameLable) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: `# ${nameLable}`,
+          data: data,
+          borderWidth: 1,
+          backgroundColor: ['red', 'green', 'blue', 'gold', 'brown', 'orange']
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  window.onload = function() {
+    const ctx = document.getElementById('myChart');
+    const ctx2 = document.getElementById('myChart2');
+
+    let data = [];
+    let labels = [];
+    let namelabel = 'Doanh Thu';
+
+    {% for s in stats %}
+    labels.push('{{ s[1] }}');
+    data.push({{ s[2] }});
+    {% endfor %}
+
+    let data2 = [];
+    let labels2 = [];
+    let namelabel2 = 'Tần Suất Bán Sách';
+
+    {% for s in stats_book_sold %}
+    labels2.push('{{ s[1] }}');
+    data2.push({{ s[4] }});
+    {% endfor %}
+
+    draw(ctx, data, labels,namelabel);
+    draw(ctx2, data2, labels2,namelabel2);
+  }
+</script>
+{% endblock %}

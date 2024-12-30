@@ -1,0 +1,144 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="grid">
+    <div class="grid__row" style="margin: 10px;">
+        <div class="grid__column-5" style="margin-right: 10px; padding-right:5px;">
+            <img src="{{ book.image }}" class="book_image" style='height:500px' alt="{{ book.title }}">
+        </div>
+        <div class="grid__column-8" style="padding:10px">
+            <div class="book-info" style="margin-left:20px">
+                <h1 style="margin:auto;font-size:30px">{{ book.title }}</h1>
+                <p class="fs-3" style="margin:20px 0 20px 0;"><strong>Tác giả:</strong> {{ book.author }}</p>
+                <p><strong class="fs-3">Thể loại:</strong></p>
+                <ul class="fs-4">
+                    {% for category in book.categories %}
+                        <li>{{ category }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="home-product-item__price fs-3">
+                    <span class="home-product-item__price-old fs-3">
+                        {{ "{:,.0f}".format(book.prices[0].price ).replace(",", ".") }}đ
+                    </span>
+                    <span class="home-product-item__price-current fs-3">{{ "{:,.0f}".format( book.prices[1].price).replace(",", ".") }}đ</span>
+                </div>
+                {% if book.description %}
+                <p><strong>Mô tả:</strong> {{ book.description }}</p>
+                {% endif %}
+                <div style="display: inline-flex; justify-content: flex-start; align-items: center; max-width: 100%;">
+                    <div class="home-product-item__rating fs-4">
+                        <i data-value="1"  class="home-product-item__rating--gold fa-solid fa-star"></i>
+                        <i data-value="2" class="home-product-item__rating--gold fa-solid fa-star"></i>
+                        <i data-value="3" class="home-product-item__rating--gold fa-solid fa-star"></i>
+                        <i data-value="4" class="home-product-item__rating--gold fa-solid fa-star"></i>
+                        <i data-value="5" class="fa-solid fa-star"></i>
+                    </div>
+                    <span class="home-product-item__sold fs-4">88 đã bán</span>
+                </div>
+            </div>
+            <div style="margin-top: 200px;">
+                <a href="javascript:void(0);" onclick="window.location.href = document.referrer;" class="button btn--primary mt-4">Quay lại</a>
+            <a href="javascript:;" onclick="addToCart({{ book.id }}, '{{ book.title }}', {{ book.prices[1].price }}, '{{book.image}}')" class="button" style="background-color: red;color:white;">Thêm Sách Vào Giỏ</a>
+            </div>
+        </div>
+    </div>
+    {% if current_user.is_authenticated and has_successfully_ordered_and_can_comment%}
+    <div class="mt-4">
+        <div class="home-product-item__rating fs-4" id='rating'>
+            <i data-value="1"  class="home-product-item__rating--gold fa-solid fa-star star"></i>
+            <i data-value="2" class="home-product-item__rating--gold fa-solid fa-star star"></i>
+            <i data-value="3" class="home-product-item__rating--gold fa-solid fa-star star"></i>
+            <i data-value="4" class="home-product-item__rating--gold fa-solid fa-star star"></i>
+            <i data-value="5" class="fa-solid fa-star star"></i>
+        </div>
+        <textarea class="form-control mt-3 fs-4" rows="5" id="comment" name="text" placeholder="Nội dung bình luận..."></textarea>
+        <button class="btn btn-info mt-2 fs-4" onclick="addReview({{book.id}})">Thêm bình luận</button>
+    </div>
+    {% else %}
+    <!-- <div class="m-3 fs-2">
+    <p>Vui lòng <a href="/?registered=true&next=/books/{{book.id}}">đăng nhập</a> để bình luận!</p>
+    </div> -->
+    {% endif %}
+    {% if reviews%}
+    <div class="m-4">
+        <h2 class="fs-2">Đánh Giá</h2>
+    </div>
+        <div id="reviews" class="m-4">
+            {% for c in reviews %}
+            <div class="row alert alert-info mb-3">
+                <div class="col-md-2 col-xs-4 fs-2">
+                    <h2 >{{ c.client.name }}</h2>
+                    <p><span class="date">{{ c.created_at }}</span></p>
+                </div>
+                <div class="col-md-10 col-xs-8">
+                    <div class="rating fs-3 mb-2">
+                        {% for i in range(1, c.rate + 1) %}
+                        <span class="star text-warning">&#9733;</span>
+                        {% endfor %}
+                        {% for i in range(c.rate + 1, 6) %}
+                        <span class="star text-muted">&#9734;</span>
+                        {% endfor %}
+                    </div>
+                    <p class="fs-3"><strong>{{ c.content }}</strong></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+</div>  
+
+
+
+
+<div class="toast-container position-fixed top-50 start-50 translate-middle p-3" style="z-index: 1100;display: none;">
+    <div id="liveToast" class="toast text-bg-success border-0 d-flex align-items-center justify-content-center" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; min-height: 100px; font-size: 1.5rem;">
+        <div class="toast-body d-flex align-items-center justify-content-center w-100">
+            <i class="fa fa-check-circle me-2" aria-hidden="true"></i>
+            Đã thêm vào giỏ hàng
+        </div>
+    </div>
+</div>
+<input type="hidden" id="rating" value="5">
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const bookId = {{ book.id }};
+        fetch(`/books/${bookId}/reviews/status`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'reviewed') {
+                    document.getElementById('rating').style.display = 'none';
+                    document.getElementById('comment').style.display = 'none';
+                    document.querySelector('button[onclick^="addReview"]').style.display = 'none';
+                } else {
+                    const defaultRating = 5;
+                    const stars = document.querySelectorAll('.star');
+                    const ratingInput = document.getElementById('rating');
+                    console.log(stars);
+                    stars.forEach(star => {
+                        const rating = star.getAttribute('data-value');
+                        star.style.color = rating <= defaultRating ? 'gold' : 'gray';
+                    });
+                    ratingInput.value = defaultRating;
+    
+                    stars.forEach(star => {
+                        star.addEventListener('click', function() {
+                            const rating = this.getAttribute('data-value');
+                            stars.forEach(s => {
+                                s.classList.remove('selected');
+                                s.style.color = s.getAttribute('data-value') <= rating ? 'gold' : 'gray';
+                            });
+                            this.classList.add('selected');
+                            ratingInput.value = rating;
+                        });
+                    });
+    
+                    const dates = document.getElementsByClassName("date");
+                    for (let d of dates) {
+                        d.innerText = moment(d.innerText).locale("vi").fromNow();
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+{% endblock %}

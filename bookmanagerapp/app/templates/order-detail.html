@@ -1,0 +1,49 @@
+{% extends 'layout/base.html' %}
+{% block content %}
+<div class="grid">
+<h1 class="text-center text-danger mt-1">CHI TIẾT ĐƠN HÀNG</h1>
+{% if order %}
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark fs-2" >
+        <tr>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành Tiền</th>
+        </tr>
+    </thead>
+    <tbody class="fs-3">
+        {% for c in order %}
+        <tr id="book{{ c[0] }}">
+            <td>{{ c[0] }}</td>
+            <td>{{ c[1] }}</td>
+            <td>{{ "{:,.0f}".format(c[3]).replace(",", ".") }}  VNĐ</td>
+            <td>{{ c[2] }}</td>
+            <td>{{"{:,.0f}".format(c[3] * c[2]).replace(",", ".") }} VNĐ</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<div class="container">
+    <div class="row justify-content-end">
+        <div class="col-lg-4 col-xl-3">
+            <div class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 16px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between fs-1" style="font-weight: 500;">
+                        <p class="mb-2 cart-amount" >Tổng tiền:</p>
+                        <p class="mb-2">{{total_price}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+    <div class="alert alert-warning">Không có thông tin đơn hàng nào!</div>
+{% endif %}
+</div>
+{% endblock %}

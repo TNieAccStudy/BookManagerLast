@@ -1,0 +1,167 @@
+{% extends 'layout/base.html'%}
+{% block content %}
+<link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> <!-- Use bootstrap.bundle.js to include both Bootstrap JS and Popper.js -->
+<link rel="stylesheet" href="{{ url_for('static',filename='assets/css/shoppingcard.css') }}" />
+<style>
+    body {
+        font-family: 'Roboto', sans-serif !important;
+    }
+</style>
+<div class="grid">
+    <div class="container mt-3">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col">
+            <div class="table-responsive">
+            {% if 'cart' in session and session.cart%}
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-dark fs-3 ">
+                    <tr>
+                        <th scope="col">
+                            <input type="checkbox" id="select-all-btn" {% if session['selected_all'] %}checked{% endif %}/>
+                            Chọn Sản Phẩm
+                        </th>
+                        <th scope="col">Mã sản phẩm</th>
+                        <th scope="col">Sản phẩm</th>
+                        <th scope="col">Đơn giá</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Thành Tiền</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="fs-4">
+                    {% for c in session['cart'].values() %}
+                    <tr style="height:60px;" class="book{{ c.id }}" id="books{{ c.id }}">
+                        <td class="align-middle">
+                            <input type="checkbox" class="item-checkbox" onchange="updateSelection({{ c.id }}, this)" {% if c.is_selected %}checked{% endif %} />
+                        </td>
+                        <td class="align-middle">
+                            <p class="mb-0" style="font-weight: 500;">{{ c.id }}</p>
+                        </td>
+                        <td class="align-middle">
+                            <div class="d-flex align-items-center" >
+                                <img src="{{ c.image }}" class="img-fluid rounded-3" style="width: 120px;height:100px;" alt="Book">
+                                <div class="flex-column ms-4">
+                                    <p class="mb-2">{{ c.title }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <p class="mb-0" style="font-weight: 500;">{{ "{:,.0f}".format(c.price).replace(",", ".") }} VNĐ</p>
+                        </td>
+                        <td class="align-middle">
+                            <div class="d-flex flex-row align-items-center">
+                                <button class="btn btn-link px-2 fs-4" onclick="this.parentNode.querySelector('input[type=number]').stepDown(); updateCart({{ c.id }}, this.parentNode.querySelector('input[type=number]'));">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input id="form1" min="0" name="quantity" onblur="updateCart({{ c.id }}, this)" value="{{ c.quantity }}" type="number" class="form-control form-control-sm fs-4" style="width: 50px;" />
+                                <button class="btn btn-link px-2 fs-4" onclick="this.parentNode.querySelector('input[type=number]').stepUp(); updateCart({{ c.id }}, this.parentNode.querySelector('input[type=number]'));">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <p class="mb-0 price_final{{c.id}}" style="font-weight: 500;">{{ "{:,.0f}".format(c.price * c.quantity).replace(",", ".") }} VNĐ</p>
+                        </td>
+                        <td class="align-middle">
+                            <button class="btn btn-danger fs-3" onclick="deleteCart({{ c.id }}, this)">&times;</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+                <div class="container">
+                    <div class="row justify-content-end">
+                        <div class="col-lg-4 col-xl-3">
+                            <div class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 16px;">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between  fs-2" style="font-weight: 500;">
+                                        <p class="mb-2">Tổng Tiền</p>
+                                        <p class="mb-2 cart-amount">{{"{:,.0f}".format(cart_stats.total_amount).replace(",", ".")}} VNĐ</p>
+                                    </div>
+                                    <!--
+                                    <div class="d-flex justify-content-between" style="font-weight: 500;">
+                                        <p class="mb-0">Shipping</p>
+                                        <p class="mb-0">$2.99</p>
+                                    </div>
+                                    <hr class="my-4">
+                                    <div class="d-flex justify-content-between mb-4" style="font-weight: 500;">
+                                        <p class="mb-2">Total (tax included)</p>
+                                        <p class="mb-2">$26.48</p>
+                                    </div>
+                                    -->
+                                    <a href='/checkout' id='checkout-button' class="btn btn-primary btn-block btn-lg" style="text-decoration: none;" data-mdb-button-init data-mdb-ripple-init>
+                                        <div class="d-flex justify-content-between fs-2">
+                                            Thanh Toán
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else%}
+            <ul class="header__cart-list-item d-flex justify-content-center align-items-center flex-column" style="height: 400px;">
+                <li class="header__cart-item text-center">
+                    <img src="{{ url_for('static', filename='assets/img/no_cart.png') }}" alt="" class="header__cart-img" style="margin-bottom: 10px; width: 250px; height: 250px;">
+                    <div class="header__cart-item-info">
+                        <div class="header__cart-item-head">
+                            <h5 class="header__cart-item-name" style="margin-top: 10px; font-size: 20px;">Giỏ Hàng Của Bạn Còn Trống</h5>
+                        </div>
+                        <div class="header__cart-item-body d-flex justify-content-center">
+                            <a href="/" class="button btn--primary mt-3 ">Mua Ngay</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            {% endif %}
+
+        </div>
+    </div>
+</div>  
+<script>
+    document.getElementById('select-all-btn').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        const ids = [];
+        const selectAllBtn = document.getElementById('select-all-btn');
+        const isChecked = selectAllBtn.checked;
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+            ids.push(checkbox.closest('tr').id.replace('books', ''));
+        });
+
+        updateAllSelections(ids, isChecked);
+    });
+
+    document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const selectAllBtn = document.getElementById('select-all-btn');
+            const allChecked = document.querySelectorAll('.item-checkbox:checked').length === document.querySelectorAll('.item-checkbox').length;
+            selectAllBtn.checked = allChecked;
+        });
+    });
+    document.getElementById('checkout-button').addEventListener('click', function(event) {
+        event.preventDefault();
+        checkCartAndProceed();
+    });
+</script>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" 
+                 style="{% if category == 'error' %}color: red; font-weight: bold; font-size: 1.2rem;{% else %}font-size: 1.1rem;{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+{% endblock%}

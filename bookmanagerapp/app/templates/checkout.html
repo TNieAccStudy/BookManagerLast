@@ -1,0 +1,158 @@
+{% extends 'layout/base.html' %}
+{% block title %}Đặt hàng{% endblock %}
+{% block content %}
+
+    <div class="container my-5 grid " style="width:1000px">
+        <h1 class="text-center mb-4" style='color: #2D37EE;'>ĐẶT HÀNG</h1>
+
+        <form method="post" action="/orders" class="p-4 border rounded shadow bg-light fs-4" id='form-order' >
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <div class="auth-form__group">
+                        <input type="text" class="form-control fs-3" value="{{info_user.name}}" id="name" placeholder="Họ tên" name="name" />
+                        <span class="auth-form__message"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="auth-form__group">
+                        <input type="text" class="form-control fs-3" id="phone" value="{{info_user.phone}}"placeholder="Số điện thoại" name="phone" />
+                        <span class="auth-form__message"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="auth-form__group">
+                        <input type="email" class="form-control fs-3" id="email" value="{{info_user.email}}" placeholder="Email" name="email" />
+                        <span class="auth-form__message"></span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="auth-form__group">
+                        <input type="text" class="form-control fs-3" id="address" value="{{info_user.address}}" placeholder="Địa chỉ" name="address" />
+                        <span class="auth-form__message"></span>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Cart Items -->
+            {% if 'cart' in session and session.cart%}
+            <h4 class="text-primary mb-3">Sản phẩm của bạn</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover ">
+                    <thead class="table-dark fs-3">
+                        <tr>
+                            <th scope="col">Mã sản phẩm</th>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Đơn giá</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Thành Tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody class="fs-4">
+                        {% for c in session['cart'].values() %}
+                        {% if c.is_selected %}
+                        <tr style="height:60px;" id="books{{ c.id }}">
+                            <td class="align-middle">
+                                <p class="mb-0" style="font-weight: 500;">{{ c.id }}</p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center" >
+                                    <img src="{{ c.image }}" class="img-fluid rounded-3" style="width: 120px;height:100px;" alt="Book">
+                                    <div class="flex-column ms-4">
+                                        <p class="mb-2">{{ c.title }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <p class="mb-0" style="font-weight: 500;">{{ "{:,.0f}".format(c.price).replace(",", ".") }} VNĐ</p>
+                            </td>
+                            <td class="align-middle">
+                                <div class="d-flex flex-row align-items-center">
+                                    <p class="fs-4 mb-0">{{c.quantity}}</p>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <p class="mb-0" style="font-weight: 500;">{{ "{:,.0f}".format(c.price * c.quantity).replace(",", ".") }} VNĐ</p>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            <h4 class="text-primary mb-3">Phương Thức Thanh Toán</h4>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="payment-cash" name="payment_method" value="cash" >
+                <label class="form-check-label" for="payment-cash">Thanh Toán Khi Nhận Hàng</label>
+            </div>
+            
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="payment-card" name="payment_method" value="card" checked>
+                <label class="form-check-label" for="payment-card">Ví Momo</label>
+            </div>
+            <span class="auth-form__message"></span>
+            <!-- Delivery Method -->
+            <h4 class="text-primary mt-4 mb-3">Phương Thức Nhận Hàng</h4>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="delivery-home" name="delivery_method" value="home"  onclick="toggleDeliveryMethod()">
+                <label class="form-check-label" for="delivery-home">Giao hàng tận nơi</label>
+            </div>
+            <div id="delivery-address" class="auth-form__group mb-3" style="display: none;">
+                <input type="text" class="form-control fs-3" id="address-receive" placeholder="Địa chỉ nhận" name="address-receive" />
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="delivery-store" name="delivery_method"  value="store" checked onclick="toggleDeliveryMethod()">
+                <label class="form-check-label" for="delivery-store">Nhận tại cửa hàng</label>
+            </div>
+            <div id="store-location" class="mb-3 mt-3"  style='padding-right:20px' >
+                <select class="form-control fs-3" id="store" name="store">
+                    <option value="Thủ Đức">Thủ Đức </option>
+                    <option value="Bình Thạnh">Bình Thạnh </option>
+                </select>
+            </div>
+            
+
+            <div class="text-center">
+                <button class="btn btn-danger btn-lg mt-3 fs-2" type="submit" id='checkout'>Đặt hàng</button>
+            </div>
+        </form>
+    </div>
+</div>
+    <script>
+        function toggleDeliveryMethod() {
+            const deliveryHome = document.getElementById('delivery-home');
+            const deliveryStore = document.getElementById('delivery-store');
+            const addressInput = document.getElementById('address-receive');
+            const storeLocation = document.getElementById('store-location');
+            const storeSelect = document.getElementById('store');
+            
+            if (deliveryHome.checked) {
+                addressInput.disabled = false;
+                storeSelect.disabled = true;
+                storeLocation.style.display = 'none';
+                addressInput.parentElement.style.display = 'block';
+            } else if (deliveryStore.checked) {
+                addressInput.disabled = true;
+                storeSelect.disabled = false;
+                storeLocation.style.display = 'block';
+                console.log(storeLocation.style.display);
+                addressInput.parentElement.style.display = 'none';
+            }
+        }
+        Validator({
+            form:'#form-order',
+            formGroupSelector:'.auth-form__group',
+            formSubmitButton: '#checkout',
+            errorSelector: '.auth-form__message',
+            rules: [
+            Validator.isRequired('#name'),
+            Validator.isRequired('#email'),
+            Validator.isEmail('#email'),
+            Validator.isRequired('#phone'),
+            Validator.isRequired('#address'),
+        ]
+        });
+    </script>
+
+{% endblock%}

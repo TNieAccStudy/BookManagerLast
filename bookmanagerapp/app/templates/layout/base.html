@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+    <link rel="icon" href="https://abctech.vn/wp-content/uploads/2017/06/logo-nen-xanh.jpg" type="image/x-icon" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/base.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/book.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/book.css') }}" />
+
+    <script src={{  url_for('static',filename='assets/javascript/validator.js')}}></script>
+    <script src={{  url_for('static',filename='assets/javascript/pagination.js') }}></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/fonts/fontawesome-free-6.4.0/css/all.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"></script>
+</head>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif !important;
+    }
+</style>
+<body>
+    <div class="app">
+        {% block header%}
+            {% include 'layout/header.html'%}
+            {% endblock %}
+        
+        <div class="app__container">
+            {% block content%}
+            {% endblock %}
+        </div>
+        {% block footer%}
+            {% include 'layout/footer.html'%}
+        {% endblock %}
+    </div>
+<!-- Modal layout -->
+            <div class="modal">
+        <div class="modal__overlay"></div>
+        <!-- position eat into the next post , z-index Adjust priority of position -->
+        <div class="modal__body">
+            <form class="auth-form" id="form-3" >
+                <div class="auth-form__container">
+                    <div class="auth-form__header">
+                        <h3 class="auth-form__heading">Đăng ký</h3>
+                        <span class="auth-form__switch-btn" id="login2">Đăng nhập</span>
+                    </div>
+
+                    <div class="auth-form__form">
+                        <div class="auth-form__group">
+                            <label for="name" class="auth-form__label" >Họ Tên*</label>
+                            <input type="text" class="auth-form__input" placeholder="Họ Tên" id="name" name="name">
+                            <span class="auth-form__message"></span>
+                        </div>
+                        <div class="auth-form__group">
+                            <label for="email" class="auth-form__label" >Email*</label>
+                            <input type="text" class="auth-form__input" placeholder="Email" id="email" name="email">
+                            <span class="auth-form__message"></span>
+                        </div>
+                        <div class="auth-form__group">
+                            <label for="username" class="auth-form__label" >Tên đăng nhập*</label>
+                            <input type="text" class="auth-form__input" placeholder="Tên đăng nhập" id="username" name="username">
+                            <span class="auth-form__message"></span>
+                        </div>
+                        <div class="auth-form__group">
+                            <label for="password" class="auth-form__label">Mật khẩu*</label>
+                            <input type="password" class="auth-form__input" placeholder="Mật khẩu" id="password" name="password">
+                            <span class="auth-form__message"></span>
+                        </div>
+                        <div class="auth-form__group">
+                            <label for="password_confirmation" class="auth-form__label">Nhập lại mật khẩu*</label>
+                            <input type="password" class="auth-form__input" placeholder="Nhập lại Mật khẩu" id="password_confirmation" name="password_confirmation">
+                            <span class="auth-form__message"></span>
+                        </div>
+                        <div class="auth-form__group">
+                            <span class="auth-form__message text-danger" id="error-message"></span>
+                        </div>
+                        <div class="auth-form__aside">
+                            <p class="auth-form__policy-text">
+                                Bằng việc đăng kí bạn đã đồng ý
+                                <a href="" class="auth-form__policy-link">Điều khoản dịch vụ</a> &
+                                <a href="" class="auth-form__policy-link">chính sách bảo mật </a>
+                            </p>
+                        </div>
+
+                        <div class="auth-form__controls">
+                            <button class="button btn--normal auth-form__controls-back " id="comeback">TRỞ LẠI</button>
+                            <button type="submit" class="button btn--primary">ĐĂNG KÍ</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-form__socials">
+                    <a href="" class="auth-form__socials--facebook button btn--size-s btn--with-icon">
+                        <i class="fa-brands auth-form__socials-icon fa-square-facebook"></i>
+                        <span class="auth-form__socials-title">
+                            Kết nối với Facebook
+                        </span>
+                    </a>
+                    <a href="" class="auth-form__socials--google button btn--size-s btn--with-icon">
+                        <i class="fa-brands auth-form__socials-icon fa-google"></i>
+                        <span class="auth-form__socials-title">
+                            Kết nối với Google
+                        </span>
+                    </a>
+                </div>
+            </form>
+            
+            <!-- Login Form -->
+            <form class="auth-form login" id='form-5'>
+                <div class="auth-form__container">
+                    <div class="auth-form__header">
+                        <h3 class="auth-form__heading">Đăng nhập</h3>
+                        <span class="auth-form__switch-btn" id="register2">Đăng ký</span>
+                    </div>
+            
+                    <div class="auth-form__form">
+                        <div class="auth-form__group">
+                            <label for="username" class="auth-form__label">Tên Đăng Nhập*</label>
+                            <input type="text" class="auth-form__input" placeholder="Tên đăng nhập" id="username" name="username">
+                            <span class="auth-form__message"></span>
+                        </div>
+                        <div class="auth-form__group">  
+                            <label for="password" class="auth-form__label">Mật khẩu*</label>
+                            <input type="password" class="auth-form__input" placeholder="Mật khẩu" id="password" name="password">
+                            <span class="auth-form__message"></span>
+                        </div>
+                        <div class="auth-form__group">
+                            <span class="auth-form__message text-danger" id="error-message-login"></span>
+                        </div>
+                        <div class="auth-form__aside">
+                            <div class="auth-form__help">
+                                <a href="" class="auth-form__help-link auth-form__help-forgot">Quên mật khẩu</a>
+                                <span class="auth-form__help-separate"></span>
+                                <a href="" class="auth-form__help-link">Cần trợ giúp ?</a>
+                            </div>
+                        </div>
+            
+                        <div class="auth-form__controls">
+                            <button type="button" class="button btn--normal auth-form__controls-back" id="comeback2">TRỞ LẠI</button>
+                            <button type="submitBtn" class="button btn--primary">ĐĂNG NHẬP</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-form__socials">
+                    <a href="" class="auth-form__socials--facebook button btn--size-s btn--with-icon">
+                        <i class="fa-brands auth-form__socials-icon fa-square-facebook"></i>
+                        <span class="auth-form__socials-title">
+                            Kết nối với Facebook
+                        </span>
+                    </a>
+                    <a href="" class="auth-form__socials--google button btn--size-s btn--with-icon">
+                        <i class="fa-brands auth-form__socials-icon fa-google"></i>
+                        <span class="auth-form__socials-title">
+                            Kết nối với Google
+                        </span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div> 
+    <script src={{ url_for('static',filename='assets/javascript/events.js' )}}></script>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        var form3 = document.getElementById('form-3');
+        if (form3) {
+            form3.addEventListener('submit', function(event) {
+                event.preventDefault();
+                registerUser(); 
+            });
+        }
+  
+        var formLogin = document.getElementById('form-5');
+        if (formLogin) {
+            formLogin.addEventListener('submit', function(event) {
+                event.preventDefault();
+                loginUser(); 
+            });
+        }
+    });
+    Validator({
+        form:'#form-3',
+        formGroupSelector:'.auth-form__group',
+        errorSelector: '.auth-form__message',
+        rules: [
+        Validator.isRequired('#name','Vui lòng nhập tên đầy đủ của bạn'),
+        Validator.isRequired('#email'),
+        Validator.isEmail('#email'),
+        Validator.isRequired('#username'),
+        Validator.minLength('#password',6),
+        Validator.isRequired('#password_confirmation'),
+        //Validator.isRequired('#avatar'),
+        //Validator.isRequired('#province'),
+        //Validator.isRequired('input[name="gender"]'),
+        Validator.isConfirmed('#password_confirmation',function() { return document.querySelector('#form-1 #password').value;
+    },'Mật khẩu nhập lại không chính xác')
+    ]
+});
+
+Validator({
+    form:'#form-6',
+    formGroupSelector:'.auth-form__group',
+    formSubmitButton:'#submitBtn',
+    errorSelector: '.auth-form__message',
+    rules: [
+    Validator.isRequired('#username'),
+    //Validator.isRequired('#email'),
+    //Validator.isEmail('#email'),
+    Validator.minLength('#password',6),
+    //Validator.isRequired('#password_confirmation'),
+    //Validator.isRequired('#avatar'),
+    //Validator.isRequired('#province'),
+    //Validator.isRequired('input[name="gender"]'),
+    //Validator.isConfirmed('#password_confirmation',function() { return document.querySelector('#form-1 #password').value;
+//},'Mật khẩu nhập lại không chính xác')
+]
+});
+
+</script>
+<script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+</body>
+</html>
