@@ -413,7 +413,7 @@ def add_receipt(details:list, client_id=None):
     db.session.commit()
     print(details)
     for detail in details:
-        receipt_detail = ReceiptDetail(receipt_id=receipt.id, book_id=detail.get('book_id'),
+        receipt_detail = ReceiptDetail(receipt_id=receipt.id, book_id=detail.get('id'),
                                         quantity=detail.get('quantity'),
                                           price=detail.get('price'))
         db.session.add(receipt_detail)
@@ -563,7 +563,7 @@ def update_order_with_state(order_id,state,reason=None,cancel_state=None):
                     {
                         'quantity': d[0],
                         'price': d[1],
-                        'book_id': d[2],
+                        'id': d[2],
                     }
                     for d in details
                 ]

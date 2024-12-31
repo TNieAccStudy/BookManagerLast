@@ -208,7 +208,7 @@ class DeliveryOrder(EmployeeAuthenticatedModelView):
     list_template = 'employee/em_list.html'
 
     column_formatters = {
-        'delivery': lambda v, c, m, p: Markup(f'<a onclick="confirmOrder({m.id},this)" data-type="delivery" class="btn my_custom_button"><i class="uil uil-check-circle"></i></a>'),  
+        'delivery': lambda v, c, m, p: Markup(f'<a onclick="confirmOrder({m.id},this)" data-type="delivery" class="btn my_custom_button"><i class="uil uil-truck"></i></a>'),  
     }
 
     def get_query(self):
@@ -223,7 +223,7 @@ class ShopCancelOrderModelView(EmployeeAuthenticatedModelView):
     column_list = ['id','state', 'cancel_state','shop_cancel']
 
     column_formatters = {
-        'shop_cancel': lambda v, c, m, p: Markup(f'<a onclick="confirmOrder({m.id},this)" data-type="shopcancel" class="btn my_custom_button"><i class="uil uil-check-circle"></i></a>'),  
+        'shop_cancel': lambda v, c, m, p: Markup(f'<a onclick="confirmOrder({m.id},this)" data-type="shopcancel" class="btn my_custom_button"><i class="uil uil-store-slash"></i></a>'),  
     }
 
     def get_query(self):
