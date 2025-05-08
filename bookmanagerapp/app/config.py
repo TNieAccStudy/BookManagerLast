@@ -13,7 +13,7 @@ api_key='388824799612651',
 api_secret='_fS88Re_o5YvKrRR6Sip519quVU')
 app=Flask(__name__)
 
-db_host="terraform-20250508145700505400000001.ct826iweg6n5.us-east-1.rds.amazonaws.com"
+db_host="terraform-20250508172110105800000001.cpm02wggy33q.us-east-1.rds.amazonaws.com"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://admin:%s@{db_host}/bookmanagerdb" % quote('admin1234')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
