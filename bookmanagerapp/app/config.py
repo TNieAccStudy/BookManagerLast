@@ -12,7 +12,10 @@ cloudinary.config(cloud_name='dta0pubsn',
 api_key='388824799612651',
 api_secret='_fS88Re_o5YvKrRR6Sip519quVU')
 app=Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:%s@localhost/bookmanagerdb" % quote('Admin@123')
+
+db_host="terraform-20250508145700505400000001.ct826iweg6n5.us-east-1.rds.amazonaws.com"
+
+app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://admin:%s@{db_host}/bookmanagerdb" % quote('admin1234')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 app.config['PAGE_SIZE'] = 8
