@@ -107,7 +107,7 @@ def ger_respone_momo(data):
 
 
 # delivery_service_url = 'https://deliverysrv203.pythonanywhere.com'
-delivery_service_url = 'http://u1-1-lb-5-lb-855869411.us-east-1.elb.amazonaws.com:7300/'
+delivery_service_url = 'http://44.204.135.140:7300/'
 
 def add_order_for_delivery(order_id):
     url = delivery_service_url + '/api/packages/'
