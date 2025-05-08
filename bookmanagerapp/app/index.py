@@ -827,4 +827,4 @@ scheduler.add_job(Order.update_order_status, 'interval', hours=1)
 scheduler.start()
 if __name__ == '__main__':
     # ngrok start --config "C:\Users\MINH\AppData\Local\ngrok\ngrok2.yml" tunnel2
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)
